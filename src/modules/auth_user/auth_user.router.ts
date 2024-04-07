@@ -3,12 +3,12 @@ import admin from "../../../firebaseAdmin";
 
 const authUserRouter = Router();
 
-authUserRouter.post("/:user_id", async (req: Request, res: Response) => {
-  const { email, password, userId, role } = req.body;
+authUserRouter.post("/", async (req: Request, res: Response) => {
+  const { email, password, user_id, role } = req.body;
 
   try {
     // Validate email, password, userId, and roles
-    if (!email || !password || !userId || !role) {
+    if (!email || !password || !user_id || !role) {
       return res
         .status(400)
         .send("Email, password, userId, and roles are required");
@@ -18,23 +18,22 @@ authUserRouter.post("/:user_id", async (req: Request, res: Response) => {
     const userRecord = await admin.auth().createUser({
       email: email,
       password: password,
-      uid: userId, // Set the user ID
+      uid: user_id, // Set the user ID
     });
 
     // Add custom claims (roles) to the user
-    await admin.auth().setCustomUserClaims(userId, { role });
+    await admin.auth().setCustomUserClaims(user_id, { role });
 
     // Return the user ID
-    res.status(201).json({ userId: userRecord.uid });
+    res.status(201).json({ user_id: userRecord.uid });
   } catch (error) {
     console.error("Error creating user:", error);
     res.status(500).send("Internal server error");
   }
 });
 
-authUserRouter.put("/:user_id", async (req, res) => {
-  const { user_id } = req.params;
-  const { email } = req.body;
+authUserRouter.put("/", async (req, res) => {
+  const { email, user_id } = req.body;
 
   try {
     // Validate email
