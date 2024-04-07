@@ -33,12 +33,12 @@ authUserRouter.post("/", async (req: Request, res: Response) => {
 });
 
 authUserRouter.put("/", async (req, res) => {
-  const { email, user_id } = req.body;
+  const { email, user_id, password } = req.body;
 
   try {
     // Validate email
-    if (!email) {
-      return res.status(400).send("Email is required for update");
+    if (!email || !password || !user_id) {
+      return res.status(400).send("Email, password, and userId are required");
     }
 
     // Update the user's email
