@@ -2,7 +2,7 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors"; // Import the cors middleware
-import authUserRouter from "./modules/auth_user/auth_user.router";
+import authUserRouter from "./src/modules/auth_user/auth_user.router";
 
 dotenv.config();
 
