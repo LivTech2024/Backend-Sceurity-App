@@ -6,6 +6,8 @@ export const sendEmailSchema = z.object({
   from_name: z.string(),
   text: z.string().optional().nullable(),
   html: z.string().optional().nullable(),
+  cc: z.array(z.string().email()).optional(),
+  bcc: z.array(z.string().email()).optional(),
   attachments: z
     .array(
       z.object({

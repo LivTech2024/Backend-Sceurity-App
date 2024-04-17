@@ -16,7 +16,7 @@ export const sendEmail = async (
       return;
     }
 
-    const { to_email, from_name, subject, html, text, attachments } =
+    const { to_email, from_name, subject, html, text, attachments, bcc, cc } =
       result.data;
 
     const transporter = nodemailer.createTransport({
@@ -35,6 +35,8 @@ export const sendEmail = async (
       subject,
       text: text ?? "",
       html: html ?? "",
+      cc,
+      bcc,
       attachments,
     };
 
