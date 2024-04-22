@@ -5,12 +5,15 @@ import cors from "cors"; // Import the cors middleware
 import authUserRouter from "./src/modules/auth_user/auth_user.router";
 import sendEmailRouter from "./src/modules/send_email/send_email.router";
 import htmlToPdfRouter from "./src/modules/pdf/pdf.router";
+import bodyParser from "body-parser";
 
 dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.json());
 app.use(cors()); // Enable CORS for all routes
 

@@ -3,3 +3,4 @@ node_modules
 service.json
 .env
 dist
+.cache
