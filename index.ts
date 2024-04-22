@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors"; // Import the cors middleware
 import authUserRouter from "./src/modules/auth_user/auth_user.router";
 import sendEmailRouter from "./src/modules/send_email/send_email.router";
+import htmlToPdfRouter from "./src/modules/pdf/pdf.router";
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/auth_user", authUserRouter);
 app.use("/api/send_email", sendEmailRouter);
+app.use("/api/html_to_pdf", htmlToPdfRouter);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
