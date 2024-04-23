@@ -37,7 +37,11 @@ export const sendEmail = async (
       html: html ?? "",
       cc,
       bcc,
-      attachments,
+      attachments: attachments?.map((attachment) => ({
+        filename: attachment.filename,
+        content: Buffer.from(attachment.content, "base64"),
+        contentType: attachment.contentType,
+      })),
     };
 
     await transporter.sendMail(mailOptions);

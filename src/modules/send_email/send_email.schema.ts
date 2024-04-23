@@ -12,9 +12,7 @@ export const sendEmailSchema = z.object({
     .array(
       z.object({
         filename: z.string(),
-        content: z
-          .string()
-          .transform((val) => Buffer.from(val, "base64").toString()),
+        content: z.string(),
         contentType: z.string(),
       })
     )
