@@ -7,6 +7,8 @@ export const htmlToPdf = async (
   res: Response,
   next: NextFunction
 ) => {
+  let browser;
+
   try {
     const result = await htmlToPdfSchema.safeParseAsync(req.body);
 
@@ -17,7 +19,7 @@ export const htmlToPdf = async (
 
     const { html, file_name } = result.data;
 
-    const browser = await puppeteer.launch({
+    browser = await puppeteer.launch({
       args: ["--no-sandbox"],
       headless: true,
     });
@@ -30,7 +32,6 @@ export const htmlToPdf = async (
       });
     } catch (error) {
       console.error("Error setting page content:", error);
-      await browser.close();
       next(new Error("Failed to set page content"));
       return;
     }
@@ -43,11 +44,13 @@ export const htmlToPdf = async (
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", `attachment; filename=${file_name}`);
 
-    await browser.close();
-
     res.send(pdfBuffer);
   } catch (error) {
     console.log(error);
     next(error);
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
   }
 };
