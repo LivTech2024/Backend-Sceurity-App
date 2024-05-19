@@ -22,12 +22,18 @@ export const htmlToPdf = async (
       headless: true,
     });
     const page = await browser.newPage();
-    // await page.goto(`data:text/html;charset=UTF-8,${html}`, {
-    //   waitUntil: 'networkidle0',
-    // });
-    await page.setContent(html, {
-      waitUntil: "networkidle0",
-    });
+
+    try {
+      await page.setContent(html, {
+        waitUntil: "networkidle0",
+        timeout: 10 * 60 * 1000, // Increase timeout to 10 minutes
+      });
+    } catch (error) {
+      console.error("Error setting page content:", error);
+      await browser.close();
+      next(new Error("Failed to set page content"));
+      return;
+    }
 
     const pdfBuffer = await page.pdf({
       format: "A4",
