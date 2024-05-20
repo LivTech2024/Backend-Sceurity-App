@@ -39,6 +39,7 @@ export const htmlToPdf = async (
     const pdfBuffer = await page.pdf({
       format: "A4",
       printBackground: true,
+      timeout: 10 * 60 * 1000,
     });
 
     res.setHeader("Content-Type", "application/pdf");
