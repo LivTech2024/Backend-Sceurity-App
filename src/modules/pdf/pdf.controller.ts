@@ -9,6 +9,8 @@ export const htmlToPdf = async (
 ) => {
   let browser;
 
+  const timeout = 5 * 60 * 1000;
+
   try {
     const result = await htmlToPdfSchema.safeParseAsync(req.body);
 
@@ -22,13 +24,14 @@ export const htmlToPdf = async (
     browser = await puppeteer.launch({
       args: ["--no-sandbox"],
       headless: true,
+      protocolTimeout: timeout,
     });
     const page = await browser.newPage();
 
     try {
       await page.setContent(html, {
         waitUntil: "networkidle0",
-        timeout: 10 * 60 * 1000, // Increase timeout to 10 minutes
+        timeout, // Increase timeout to 10 minutes
       });
     } catch (error) {
       console.error("Error setting page content:", error);
@@ -39,7 +42,7 @@ export const htmlToPdf = async (
     const pdfBuffer = await page.pdf({
       format: "A4",
       printBackground: true,
-      timeout: 10 * 60 * 1000,
+      timeout,
     });
 
     res.setHeader("Content-Type", "application/pdf");
