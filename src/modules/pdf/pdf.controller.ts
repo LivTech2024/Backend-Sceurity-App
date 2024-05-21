@@ -9,7 +9,8 @@ export const htmlToPdf = async (
 ) => {
   let browser;
 
-  const timeout = 5 * 60 * 1000;
+  // Set timeout to 10 minutes (600,000 ms)
+  const timeout = 10 * 60 * 1000;
 
   try {
     const result = await htmlToPdfSchema.safeParseAsync(req.body);
@@ -22,16 +23,18 @@ export const htmlToPdf = async (
     const { html, file_name } = result.data;
 
     browser = await puppeteer.launch({
-      args: ["--no-sandbox"],
+      args: ["--no-sandbox", "--disable-dev-shm-usage"],
       headless: true,
+      timeout,
       protocolTimeout: timeout,
     });
+
     const page = await browser.newPage();
 
     try {
       await page.setContent(html, {
         waitUntil: "networkidle0",
-        timeout, // Increase timeout to 10 minutes
+        timeout,
       });
     } catch (error) {
       console.error("Error setting page content:", error);
@@ -39,22 +42,33 @@ export const htmlToPdf = async (
       return;
     }
 
-    const pdfBuffer = await page.pdf({
-      format: "A4",
-      printBackground: true,
-      timeout,
-    });
+    let pdfBuffer;
+    try {
+      pdfBuffer = await page.pdf({
+        format: "A4",
+        printBackground: true,
+        timeout,
+      });
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      next(new Error("Failed to generate PDF"));
+      return;
+    }
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", `attachment; filename=${file_name}`);
 
     res.send(pdfBuffer);
   } catch (error) {
-    console.log(error);
+    console.error("Error during PDF generation process:", error);
     next(error);
   } finally {
     if (browser) {
-      await browser.close();
+      try {
+        await browser.close();
+      } catch (closeError) {
+        console.error("Error closing browser:", closeError);
+      }
     }
   }
 };
