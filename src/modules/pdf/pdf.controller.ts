@@ -9,8 +9,8 @@ export const htmlToPdf = async (
 ) => {
   let browser;
 
-  // Set timeout to 10 minutes (600,000 ms)
-  const timeout = 10 * 60 * 1000;
+  // Set timeout to 5 minutes
+  const timeout = 5 * 60 * 1000;
 
   try {
     const result = await htmlToPdfSchema.safeParseAsync(req.body);
@@ -25,35 +25,20 @@ export const htmlToPdf = async (
     browser = await puppeteer.launch({
       args: ["--no-sandbox", "--disable-dev-shm-usage"],
       headless: true,
-      timeout,
-      protocolTimeout: timeout,
     });
 
     const page = await browser.newPage();
 
-    try {
-      await page.setContent(html, {
-        waitUntil: "networkidle0",
-        timeout,
-      });
-    } catch (error) {
-      console.error("Error setting page content:", error);
-      next(new Error("Failed to set page content"));
-      return;
-    }
+    page.setDefaultTimeout(timeout);
 
-    let pdfBuffer;
-    try {
-      pdfBuffer = await page.pdf({
-        format: "A4",
-        printBackground: true,
-        timeout,
-      });
-    } catch (error) {
-      console.error("Error generating PDF:", error);
-      next(new Error("Failed to generate PDF"));
-      return;
-    }
+    await page.setContent(html, {
+      waitUntil: "networkidle0",
+    });
+
+    let pdfBuffer = await page.pdf({
+      format: "A4",
+      printBackground: true,
+    });
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", `attachment; filename=${file_name}`);
