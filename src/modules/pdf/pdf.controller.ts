@@ -23,6 +23,7 @@ export const htmlToPdf = async (
         ? pdf_options?.orientation
         : "portrait",
       base: "./assets",
+      timeout: 1000 * 60 * 5,
     };
 
     pdf.create(html, options).toBuffer((err: Error, buffer: Buffer) => {
