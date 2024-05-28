@@ -22,11 +22,7 @@ export const htmlToPdf = async (
       orientation: pdf_options?.orientation
         ? pdf_options?.orientation
         : "portrait",
-      childProcessOptions: {
-        env: {
-          OPENSSL_CONF: "/dev/null",
-        },
-      },
+      base: "./assets",
     };
 
     pdf.create(html, options).toBuffer((err: Error, buffer: Buffer) => {
