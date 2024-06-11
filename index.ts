@@ -6,6 +6,7 @@ import authUserRouter from "./src/modules/auth_user/auth_user.router";
 import sendEmailRouter from "./src/modules/send_email/send_email.router";
 import htmlToPdfRouter from "./src/modules/pdf/pdf.router";
 import bodyParser from "body-parser";
+import compressImageRouter from "./src/modules/compress_image/compress_image.router";
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/auth_user", authUserRouter);
 app.use("/api/send_email", sendEmailRouter);
 app.use("/api/html_to_pdf", htmlToPdfRouter);
+app.use("/api/compress_image", compressImageRouter);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
